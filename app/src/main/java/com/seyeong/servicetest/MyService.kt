@@ -2,14 +2,15 @@ package com.seyeong.servicetest
 
 import android.app.Service
 import android.content.Intent
+import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 
 class MyService : Service() {
 
 
-    override fun onBind(intent: Intent): IBinder { // 스타티드 서비스에서는 사용하지 않는다.
-        TODO("Not yet implemented")
+    override fun onBind(intent: Intent): IBinder { // 스타티드 서비스에서는 사용하지 않고 바운드 서비스에서만 사용한다.
+        return binder // MyService를 Binder() 형태로 반환해서 binder 변수에 담아두었다.
     }
 
 
@@ -27,5 +28,11 @@ class MyService : Service() {
 
     //////////// 여기까지 스타티드 서비스
 
+    inner class MyBinder: Binder() { // 여기서부터 바운드 서비스
+        fun getService(): MyService {
+            return this@MyService
+        }
+    }
+    val binder = MyBinder()
 
 }
