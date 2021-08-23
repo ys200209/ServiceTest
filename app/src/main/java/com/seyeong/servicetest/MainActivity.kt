@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import com.seyeong.servicetest.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -34,11 +35,13 @@ class MainActivity : AppCompatActivity() {
     // 여기서부턴 바운드 서비스
     var myService: MyService? = null // 현재 서비스가 연결되어 있는지를 확인하는 변수
     var isService = false // 현재 서비스가 연결되어 있는지를 확인하는 변수
+
     val connection = object: ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) { // 서비스가 연결되면 자동적으로 호출하는 메서드
             val binder = service as MyService.MyBinder
             myService = binder.getService()
             isService = true
+            Log.d("태그", "연결되었습니다.")
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -58,6 +61,15 @@ class MainActivity : AppCompatActivity() {
             unbindService(connection) // 서비스를 언바인드 하도록.
             isService = false // 연결 해제되었다는 의미
             Log.d("태그", "(serviceUnbind) isService = $isService")
+        }
+    }
+
+    fun callServiceFunction(view: View) { // 바인드 서비스를 이용하여 서비스 내에 함수를 호출하는 메서드
+        if (isService) { // 현재 서비스가 연결되어 있다면
+            val message = myService?.serviceMessage()
+            Toast.makeText(this, "message = $message", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "서비스가 연결되지 않았습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 

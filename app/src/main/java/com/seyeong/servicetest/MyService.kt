@@ -28,11 +28,17 @@ class MyService : Service() {
 
     //////////// 여기까지 스타티드 서비스
 
-    inner class MyBinder: Binder() { // 여기서부터 바운드 서비스
+    //////////// 여기서부터 바운드 서비스
+    inner class MyBinder: Binder() {
         fun getService(): MyService {
             return this@MyService
         }
     }
     val binder = MyBinder()
+
+    fun serviceMessage(): String {
+        return "Hello Activity! I am Service!"
+    }
+
 
 }
